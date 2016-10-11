@@ -89,6 +89,8 @@
 
         this.setSpacing(options.spacing);
 
+        this.setContainerWidth(options.containerWidth);
+
         if (options.items && options.items.length) {
             var self = this;
 
@@ -111,6 +113,10 @@
 
     FlexText.prototype.setSpacing = function setSpacing(val) {
         this.spacing = parseFloat(val) || 0;
+    };
+
+    FlexText.prototype.setContainerWidth = function setContainerWidth(val) {
+        this.containerWidth = parseFloat(val) || 0;
     };
 
     FlexText.prototype.addItem = function addItem(item) {
@@ -149,7 +155,7 @@
         var spacing = this.spacing;
         var container = this.container;
 
-        var totalSpace = getWidth(container);
+        var totalSpace = this.containerWidth || getWidth(container);
 
         var widths = [];
         var totalWidth = 0;
