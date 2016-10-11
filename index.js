@@ -89,6 +89,8 @@
 
         this.setSpacing(options.spacing);
 
+        this.setBaseFontSize(options.baseFontSize);
+
         this.setContainerWidth(options.containerWidth);
 
         if (options.items && options.items.length) {
@@ -117,6 +119,10 @@
 
     FlexText.prototype.setContainerWidth = function setContainerWidth(val) {
         this.containerWidth = parseFloat(val) || 0;
+    };
+
+    FlexText.prototype.setBaseFontSize = function setBaseFontSize(val) {
+        this.baseFontSize = parseFloat(val) || 0;
     };
 
     FlexText.prototype.addItem = function addItem(item) {
@@ -154,6 +160,7 @@
         var items = this.items;
         var spacing = this.spacing;
         var container = this.container;
+        var baseFontSize = this.baseFontSize;
 
         var totalSpace = this.containerWidth || getWidth(container);
 
@@ -167,7 +174,7 @@
             var flex = item.flex;
 
             var text = elem.textContent || elem.innerText;
-            var fontSize = BASE_FONT_SIZE * flex;
+            var fontSize = (baseFontSize || BASE_FONT_SIZE) * flex;
 
             if (!text && whiteSpaceCount > 0) {
                 whiteSpaceCount--;
@@ -187,17 +194,26 @@
 
         totalSpace -= parseFloat(spacing) * whiteSpaceCount;
 
-        return map(widths, function (w, i) {
-            var item = items[i];
+        if (baseFontSize && totalWidth < totalSpace) {
+            return map(widths, function (w, i) {
+                return {
+                    elem: items[i].elem,
+                    fontSize: baseFontSize * items[i].flex
+                };
+            });
+        } else {
+            return map(widths, function (w, i) {
+                var item = items[i];
 
-            var fontSize = BASE_FONT_SIZE * item.flex;
-            var targetWidth = (w / totalWidth) * totalSpace;
+                var fontSize = (baseFontSize || BASE_FONT_SIZE) * item.flex;
+                var targetWidth = (w / totalWidth) * totalSpace;
 
-            return {
-                elem: item.elem,
-                fontSize: Math.max(0, fontSize / (w / targetWidth)),
-            };
-        });
+                return {
+                    elem: item.elem,
+                    fontSize: Math.max(0, fontSize / (w / targetWidth)),
+                };
+            });
+        }
     };
 
     FlexText.prototype.render = function render() {
