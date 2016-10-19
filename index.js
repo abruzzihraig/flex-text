@@ -15,12 +15,8 @@
     'use strict';
 
     // init measuring element
-    var span = document.createElement('span');
-    span.style.visibility = 'hidden';
-    span.style.position = 'fixed';
-    span.style.top = '99999999px';
-
-    document.body.appendChild(span);
+    var oc = document.createElement('canvas');
+    var octx = oc.getContext('2d');
 
     var BASE_FONT_SIZE = 100;
 
@@ -180,13 +176,13 @@
                 whiteSpaceCount--;
             }
 
-            span.style.fontWeight = getStyle(elem, 'font-weight');
-            span.style.fontFamily = getStyle(elem, 'font-family');
-            span.style.fontSize = fontSize + 'px';
+            var fontFamily = getStyle(elem, 'font-family');
+            var fontWeight = getStyle(elem, 'font-weight');
 
-            span.textContent = span.innerText = text;
+            var font = fontWeight + ' ' + fontSize + 'px / 1 ' + fontFamily;
 
-            var width = getWidth(span);
+            octx.font = font;
+            var width = octx.measureText(text).width;
 
             widths.push(width);
             totalWidth += width;
